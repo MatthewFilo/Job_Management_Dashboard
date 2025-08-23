@@ -19,20 +19,32 @@ A full-stack web application for managing jobs with real-time status updates, se
  
  Throughout the whole development process, I utilized AI to create the playwright tests as we went and utilized the failure outputs to prompt the AI so we could adjust the code and the tests accordingly. I utilized Playwright to help me with the edge cases that I was facing with pagination of the front-end and in doing so it actually speeded up my development process to fix those edge-case bugs.
  
- I tested this application with a Fresh Ubuntu Linux Virtual Machine Instance. I wanted to ensure that "make test" would run on a system with only make, docker, docker-compose, and bash installed on it. After installing only the bare software as prefaced by the Evaluation Criteria, I faced challenges to get it working between my Linux VM and my Local Mac Environment. I prompted AI to help me find a solution (more detailed below in Challenges), and decided on using our frontend host to decide which backend to connect to. Overall, ended up working with the Evaluation Criteria requirements.
+ Error handling, Modularity, Readbility and Type Safety were all practiced throughout the development of this application. Try catch blocks for async operations, snackbox notifications upon server errors (allows for more user visiblity to read errors) and more were implemented throughout development. I seperated concerns by organizing code to reusable components, hooks, and utility functions. I utilized proper React components and hooks along with compile-time error prevention and kept contexts for state management. All of this ensures clear user feedback and graceful error handling
+
+ I tested this application with a Fresh Ubuntu Linux Virtual Machine Instance. I wanted to ensure that "make test" would run on a system with only make, docker, docker-compose, and bash installed on it. After installing only the bare software as prefaced by the Evaluation Criteria, I faced challenges to get it working between my Linux VM and my Local Mac Environment. I prompted AI to help me find a solution (more detailed below in Challenges), and decided on using our frontend host to decide which backend to connect to. Overall, the project ended up working with the Evaluation Criteria requirements.
 
 ### Challenges
  There were two big challenges within this project
  1. Edge cases and bugs with the pagination
+
     In order to optimize front end performance while maintaining a clean UI, I decided to go with cursor-based pagination rather then lazy loading or infinite scrolling.
+
     The biggest edge case with pagination was concerning the deletion of jobs, as I wanted jobs from the next page to backfill the jobs on the current page. Interactions with AI, although helpful, would sometimes lead down a rabbit hole of repeated changes that wouldn't have previously met my expectations.
+
     One thing that helped me overcome this challenge was my interaction with the code and VERY specific prompts. Rather then just "It is not populating the page upon deletion", solutions arose upon prompting of "The page is not being properly populated upon deletion of jobs. I expected the behavior to be that if I delete a job on the current page, then a job from the next page would be populated at the bottom of the current page; If the next page only has one job, I expect that the next page will not exist anymore and if we are on the first page and the second page has no more jobs from deletion, then I expect the next and previous buttons to not appear on the UI anymore"
+
+    I understand that software can be finicky, however if something else does arise from the use of pagniation during the use of the software, I implemented the refresh button that fixes any issues immediately and cleans up the UI.
+
     VERY Specific prompts were the answer to most of these edge cases.
  
  2. Fixing the make file for it to work with both my local environment and a linux vm (for testing with a system only make, docker, docker-compose, and bash installed)
+
     A few hours were spent trying to get "make test" to work on a machine without npm installed. Then after the use of AI, I did get it to work on my linux virtual machine but then my local environment would not work.
+ 
     At first I was merely prompting the AI "Oh, now it doesn't work here, now it doesn't work here" and after getting nowhere with that I quickly decided to check some "hunches" I had. Turns out my first hunch was right.
-    It was a smart move to have a playwright container, but I realized when I saw that the front end of my local environment was prompting me "network error" that I was connecting to the wrong backend with local development due to the changes in the make file and how client.ts was calling "resolveApiUrl". 
+ 
+    It was a smart move to have a playwright container, but I realized when I saw that the front end of my local environment was prompting me "network error" that I was connecting to the wrong backend with local development due to the changes in the make file and how client.ts was calling "resolveApiUrl".
+ 
     I then told the AI prompt about this issue and quickly prompted it to fix resolveApiUrl, which then produced the code that allowed make to properly work in whichever environment it was running from.
 
 
@@ -93,7 +105,7 @@ A full-stack web application for managing jobs with real-time status updates, se
 
 2. **Start the application**
    ```bash
-   make build && make test
+   make build && make up
    ```
 
 3. **Seed the database with sample data**
@@ -107,6 +119,7 @@ A full-stack web application for managing jobs with real-time status updates, se
 
 ### Running Tests
 
+Simply clone the gitlab 
 ```bash
 # Run all tests
 make test
@@ -118,11 +131,11 @@ make test
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/jobs/` | List jobs with pagination and search |
+| GET | `/api/jobs/` | List all jobs |
 | POST | `/api/jobs/` | Create a new job |
 | GET | `/api/jobs/{id}/` | Get job details |
-| PATCH | `/api/jobs/{id}/` | Update job status |
-| DELETE | `/api/jobs/{id}/` | Delete a job |
+| PATCH | `/api/jobs/{id}/` | Updates a job |
+| DELETE | `/api/jobs/{id}/` | Deletes a job |
 
 ### Query Parameters
 
