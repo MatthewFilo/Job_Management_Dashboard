@@ -126,6 +126,33 @@ Simply clone the Gitlab Repository, 'cd' into the parent directory and enter
 make test
 ```
 
+### Make Commands
+
+This project uses a Makefile to simplify common development and deployment tasks:
+
+#### Development Commands
+```bash
+make build          # Build all Docker containers
+make up             # Start all services in development mode
+make stop           # Stop all running services
+```
+
+#### Database Commands
+```bash
+make seed           # Populate database with sample job data
+make migrate        # Run Django database migrations
+```
+
+#### Testing Commands
+```bash
+make test           # Run complete test suite (backend + frontend E2E tests)
+```
+
+#### Utility Commands
+```bash
+make clean          # Remove all Docker containers and images
+```
+
 ## 📖 API Documentation
 
 ### Endpoints
@@ -178,15 +205,6 @@ src/
 - ✅ Pagination navigation
 - ✅ Error handling scenarios
 
-### Production Build
-```bash
-# Build and start production services
-make prod
-
-# Run health checks
-make health-check
-```
-
 ### Environment Variables
 - `E2E_BASE_URL`: Frontend URL for testing
 - `E2E_API_URL`: Backend API URL for testing
@@ -198,20 +216,5 @@ make health-check
 - **Cache Management**: React Query handles data synchronization and caching
 - **Error Recovery**: Graceful degradation with user-friendly error messages
 - **Performance**: Optimized rendering with proper state management
-
-### Browser Support
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Implement changes with tests
-4. Submit a pull request
-
----
 
 **Note**: This application was built as a take-home assignment demonstrating full-stack development capabilities with modern web technologies.
