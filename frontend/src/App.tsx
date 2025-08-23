@@ -304,7 +304,7 @@ function App()
         </Backdrop>
         <AppBar position="sticky" color="primary" enableColorOnDark>
           <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="h6" fontWeight={700}>ReScale Jobs</Typography>
+            <Typography variant="h6" fontWeight={700}>Job Management Dashboard</Typography>
             <ThemeToggle mode={mode} onToggle={() => setMode(m => m === 'light' ? 'dark' : 'light')} />
           </Toolbar>
         </AppBar>
