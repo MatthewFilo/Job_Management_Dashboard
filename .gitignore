@@ -1,0 +1,42 @@
+# OS / Editor
+.DS_Store
+*.swp
+*.swo
+
+# Python
+venv/
+.venv/
+backend/.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Django local DB (we use Postgres via Docker)
+backend/db.sqlite3
+*.sqlite3
+
+# Node
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+frontend/.playwright-cache/
+
+# Env files
+.env
+*.env
+backend/.env
+frontend/.env
+
+# Docker volumes
+postgres-data/
+
+# Logs
+*.log
+
+*.pdf
