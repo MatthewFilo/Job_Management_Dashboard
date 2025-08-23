@@ -33,6 +33,9 @@ stop:
 down:
 	$(DC) down -v
 
+seed:
+	$(DC) exec backend bash -lc "python manage.py seed_jobs"
+
 # Run DB migrations
 migrate:
 	$(DC) exec backend bash -lc "python manage.py migrate"
