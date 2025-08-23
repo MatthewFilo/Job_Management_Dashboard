@@ -58,10 +58,26 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 3000
+      REACT_APP_API_URL: http://backend:8000/api
     ports:
       - "3000:3000"
     depends_on:
       - backend
+
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.47.2-jammy
+    shm_size: 1g
+    working_dir: /work/frontend
+    volumes:
+      - ./frontend:/work/frontend
+    environment:
+      E2E_BASE_URL: http://frontend:3000
+      E2E_API_URL: http://backend:8000/api
+    depends_on:
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
 
 volumes:
   postgres-data:

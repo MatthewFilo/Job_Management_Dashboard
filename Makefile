@@ -42,14 +42,24 @@ upm: up migrate
 
 # Run Playwright E2E tests against the running stack
 # Exports base URLs so tests can find frontend and backend
- test:
+
+test:
 	@echo "[test] Starting application stack (Docker Compose)"
 	@$(DC) up -d --build
-	@echo "[test] Installing Playwright browsers (if needed)"
-	@cd frontend && npm ci || npm install
-	@cd frontend && npx playwright install --with-deps || npx playwright install
-	@echo "[test] Running Playwright E2E tests"
-	@cd frontend && E2E_BASE_URL=http://localhost:3000 E2E_API_URL=http://localhost:8000/api npx playwright test
+	@echo "[test] Waiting for services (HTTP ready), then running Playwright E2E tests in Docker"
+	@$(DC) run --rm e2e bash -lc '\
+set -euo pipefail; \
+wait_http() { URL="$$1"; TIMEOUT_MS="$$2"; \
+  node -e "const url=process.argv[1];const until=Date.now()+parseInt(process.argv[2]);(async function r(){try{const res=await fetch(url);if(res.ok){process.exit(0)};}catch(e){};if(Date.now()<until){setTimeout(r,1000)}else{console.error(\"Timeout waiting for \"+url);process.exit(1)}})()" "$$URL" "$$TIMEOUT_MS"; \
+}; \
+echo "Waiting for API $$E2E_API_URL/jobs/?page_size=1"; \
+wait_http "$$E2E_API_URL/jobs/?page_size=1" 180000; \
+echo "Waiting for Frontend $$E2E_BASE_URL"; \
+wait_http "$$E2E_BASE_URL" 180000; \
+npm ci || npm install; \
+npx playwright install --with-deps || npx playwright install; \
+E2E_BASE_URL=$$E2E_BASE_URL E2E_API_URL=$$E2E_API_URL npx playwright test \
+'
 
 clean:
 	@echo "[clean] Stopping and removing containers, networks, and volumes"

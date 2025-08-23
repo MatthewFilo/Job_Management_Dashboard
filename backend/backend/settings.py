@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-0gl1g$_u*$kh1td_-ll(dkdsj6r_1-y#e+s!kwk$3!)kb90f!g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Allow all hosts in dev/test or use env override (needed for Docker service hostnames like 'backend')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',') if os.getenv('ALLOWED_HOSTS') else ['*']
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL', 'true').lower() == 'true'

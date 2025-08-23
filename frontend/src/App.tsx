@@ -373,7 +373,20 @@ function App()
          {loading && jobs.length === 0 ? (
            <Typography color="text.secondary">Loading…</Typography>
          ) : jobs.length === 0 ? (
-           <Typography color="text.secondary">No jobs yet. Create one above.</Typography>
+           <>
+             <Typography color="text.secondary">No jobs yet. Create one above.</Typography>
+             <Box mt={2}>
+               <PaginationBar
+                 page={page}
+                 hasPrev={!!prev}
+                 hasNext={!!next}
+                 multiplePages={false}
+                 loadingMore={loadingMore}
+                 onPrev={() => goPrev()}
+                 onNext={() => goNext()}
+               />
+             </Box>
+           </>
          ) : (
            <Stack spacing={2}>
              {jobs.map((job) => (
