@@ -30,9 +30,11 @@ export const useJobsManagement = () => {
     });
   }, [query, queryClient]);
 
+
   const getCachedPage = useCallback((path: string): Paginated<Job> | undefined => {
     return queryClient.getQueryData(['jobsPage', path, query]) as Paginated<Job> | undefined;
   }, [query, queryClient]);
+
 
   const fetchJobs = useCallback(async (setJobs: (jobs: Job[]) => void) => {
     try {
@@ -107,6 +109,7 @@ export const useJobsManagement = () => {
     }
   }, [currentPath, query, page, prev, update, fetchJobs, getCachedPage]);
 
+
   const goNext = useCallback(async (setJobs: (jobs: Job[]) => void) => {
     if (!next) return;
     try {
@@ -133,6 +136,7 @@ export const useJobsManagement = () => {
       setLoadingMore(false);
     }
   }, [next, getCachedPage, query, update, prefetchPage]);
+
 
   const goPrev = useCallback(async (setJobs: (jobs: Job[]) => void, validateNextAfterPrev?: boolean) => {
     if (!prev) return;
@@ -164,6 +168,7 @@ export const useJobsManagement = () => {
       setLoadingMore(false);
     }
   }, [prev, getCachedPage, query, update, prefetchPage]);
+
 
   return {
     // State

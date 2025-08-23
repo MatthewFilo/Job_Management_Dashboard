@@ -9,7 +9,7 @@
 #   make test    - Run Playwright E2E tests against docker-compose stack
 #   make clean   - Clean Docker resources (containers, networks, volumes)
 
-DC=docker-compose
+DC=docker compose
 
 .PHONY: build up stop down logs rebuild test clean migrate upm
 

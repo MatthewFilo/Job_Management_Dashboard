@@ -25,6 +25,7 @@ const JobsDashboard: React.FC = () => {
     goPrev,
   } = useJobsManagement();
 
+
   // Load jobs when component mounts or query changes
   useEffect(() => {
     fetchJobs(setJobs);
@@ -39,6 +40,7 @@ const JobsDashboard: React.FC = () => {
       setRefreshing(false);
     }
   };
+
 
   const handleCreateJob = async (name: string) => {
     try {
