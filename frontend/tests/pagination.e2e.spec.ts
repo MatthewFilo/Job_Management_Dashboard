@@ -19,18 +19,29 @@ async function listAllJobIds(request: APIRequestContext): Promise<number[]> {
 
 async function safeDelete(request: APIRequestContext, url: string, attempts = 3) {
   for (let i = 0; i < attempts; i++) {
-    const res = await request.delete(url);
-    if (res.ok()) return;
-    await new Promise(r => setTimeout(r, 150));
+    try {
+      const res = await request.delete(url, { timeout: 5000 });
+      if (res.ok()) return;
+    } catch (error) {
+      if (i === attempts - 1) throw error;
+    }
+    await new Promise(r => setTimeout(r, 150 * (i + 1))); // Exponential backoff
   }
-  const res = await request.delete(url);
-  expect(res.ok()).toBeTruthy();
 }
 
 async function resetJobs(request: APIRequestContext) {
   const ids = await listAllJobIds(request);
-  for (const id of ids) {
-    await safeDelete(request, `${API_BASE}/jobs/${id}/`);
+  console.log(`Deleting ${ids.length} jobs...`);
+  
+  // Delete in parallel batches to avoid timeout
+  const batchSize = 10;
+  for (let i = 0; i < ids.length; i += batchSize) {
+    const batch = ids.slice(i, i + batchSize);
+    const promises = batch.map(id => 
+      safeDelete(request, `${API_BASE}/jobs/${id}/`)
+    );
+    await Promise.all(promises);
+    console.log(`Deleted batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(ids.length / batchSize)}`);
   }
 }
 

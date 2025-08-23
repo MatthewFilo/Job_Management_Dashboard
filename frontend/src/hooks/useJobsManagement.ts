@@ -63,12 +63,32 @@ export const useJobsManagement = () => {
       
       // If current page is empty and we're not on page 1, navigate back
       if (results.length === 0 && page > 1 && prev) {
+        // Invalidate cache for the empty page we're leaving
+        queryClient.removeQueries({ 
+          queryKey: ['jobsPage', ensurePageSize(currentPath), query] 
+        });
+        
         // Navigate back to previous page
         const path = toRelativeCursorPath(client.defaults.baseURL!, prev);
         const cached = getCachedPage(path);
         const prevData = cached || await listJobs(path, { q: query || null });
         setJobs(sortJobsById(prevData.results));
-        update({ next: prevData.next, previous: prevData.previous }, 'prev');
+        
+        // Check if there's still a valid next page after navigation
+        let nextCursor = prevData.next;
+        if (nextCursor) {
+          try {
+            const nextPath = toRelativeCursorPath(client.defaults.baseURL!, nextCursor);
+            const nextData = await listJobs(nextPath, { q: query || null });
+            if (nextData.results.length === 0) {
+              nextCursor = null; // No next page if it's empty
+            }
+          } catch {
+            nextCursor = null; // Error means no next page
+          }
+        }
+        
+        update({ next: nextCursor, previous: prevData.previous }, 'prev');
         setCurrentPath(path);
         currentCursorRef.current = { before: prev };
         return { handled: true };
@@ -107,7 +127,7 @@ export const useJobsManagement = () => {
     } finally {
       setLoadingMore(false);
     }
-  }, [currentPath, query, page, prev, update, fetchJobs, getCachedPage]);
+  }, [currentPath, query, page, prev, update, fetchJobs, getCachedPage, queryClient]);
 
 
   const goNext = useCallback(async (setJobs: (jobs: Job[]) => void) => {

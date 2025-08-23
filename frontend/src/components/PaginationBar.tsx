@@ -19,11 +19,38 @@ export default function PaginationBar({ page, hasPrev, hasNext, multiplePages, l
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
       {multiplePages ? (
-        <Button variant="outlined" onClick={onPrev} disabled={!hasPrev || loadingMore}>Previous</Button>
+        <Button 
+          variant="outlined" 
+          onClick={onPrev} 
+          disabled={!hasPrev || loadingMore}
+          sx={{ minWidth: 80 }} // Ensure consistent button width
+        >
+          Previous
+        </Button>
       ) : <Box />}
       <Typography variant="body2" color="text.secondary">Page {page}</Typography>
       {multiplePages ? (
-        <Button variant="outlined" onClick={onNext} disabled={!hasNext || loadingMore} endIcon={loadingMore ? <CircularProgress size={16} /> : undefined}>Next</Button>
+        <Button 
+          variant="outlined" 
+          onClick={onNext} 
+          disabled={!hasNext || loadingMore} 
+          endIcon={loadingMore ? <CircularProgress size={16} /> : <Box sx={{ width: 16, height: 16 }} />}
+          sx={{ 
+            minWidth: 80,
+            '& .MuiButton-startIcon': {
+              marginRight: 0
+            },
+            '& .MuiButton-endIcon': {
+              position: 'absolute',
+              right: 8,
+              marginLeft: 0
+            },
+            position: 'relative',
+            justifyContent: 'center'
+          }}
+        >
+          Next
+        </Button>
       ) : <Box />}
     </Box>
   );
