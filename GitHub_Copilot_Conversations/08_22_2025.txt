@@ -18,9 +18,8 @@ Troubleshooting
 
 Notes
 - No code changes requested for the Ubuntu VM error.
-- Current file of interest: frontend/src/App.tsx with Snackbar feedback and Backdrop on refresh.
 
-Selected conversation snippets
+Conversation snippets
 - User: "Can we have a snackbar popup whenever we successfully create a new job"
   Copilot: "Added a success Snackbar on job creation."
 - User: "Also create a snackbar popup for if we successfully delete a job"
@@ -47,9 +46,8 @@ Selected conversation snippets
   Copilot: "Removed submodule config (.gitmodules and .git/config), git rm --cached frontend, deleted .git/modules/frontend and frontend/.git, git add frontend, commit, and push to make it a regular directory."
 - User: "How to properly push to a new git repository?"
   Copilot: "git remote add origin <url>; git push -u origin main; verify CI and submodules are not present."
-- User: "Ensure consistent page size in pagination."
+- User: "Ensure consistent page size with pagination."
   Copilot: "Frontend enforces page_size=15 via ensurePageSize(); backend CursorPagination page_size is 15—kept consistent with tests and UI."
-
 - User: "Have the background fill in whenever we click on the refresh button."
   Copilot: "Added Backdrop overlay."
 - User: "Undo that prompt, I meant the actual Refresh button fill with primary while pressed, then back."
