@@ -100,7 +100,7 @@ A full-stack web application for managing jobs with real-time status updates, se
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd ReScale2
+   cd Job_Management_Dashboard
    ```
 
 2. **Start the application**
@@ -119,7 +119,8 @@ A full-stack web application for managing jobs with real-time status updates, se
 
 ### Running Tests
 
-Simply clone the gitlab 
+Simply clone the Gitlab Repository, 'cd' into the parent directory and enter
+
 ```bash
 # Run all tests
 make test
