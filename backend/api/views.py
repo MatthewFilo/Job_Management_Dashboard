@@ -34,7 +34,7 @@ class JobViewSet(viewsets.ModelViewSet):
     def _cache_get(self, key: str):
         try:
             return cache.get(key)
-        except Exception:
+        except Exception as e:
             logger.error(f"Unexpected cache error for key {key}: {e}")
             return None
     def _cache_set(self, key: str, value, timeout: int):
