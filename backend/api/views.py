@@ -37,12 +37,6 @@ class JobViewSet(viewsets.ModelViewSet):
         except Exception as e:
             logger.error(f"Unexpected cache error for key {key}: {e}")
             return None
-    def _cache_set(self, key: str, value, timeout: int):
-        try:
-            cache.set(key, value, timeout=timeout)
-        except Exception as e:
-            logger.error(f"Unexpected cache error for key {key}: {e}")
-            return None
 
     def _cache_set(self, key: str, value, timeout: int):
         try:
