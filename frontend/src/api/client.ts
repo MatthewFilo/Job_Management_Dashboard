@@ -23,28 +23,37 @@ const client = axios.create({
   timeout: 10000,
 });
 
+function extractErrorMessage(data: any): string | undefined {
+  // Check for standard error fields first
+  if (data?.detail || data?.message) {
+    return data.detail || data.message;
+  }
+
+  // Handle string data directly
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  // Extract first error from validation errors (arrays or strings)
+  if (data && typeof data === 'object') {
+    for (const [key, value] of Object.entries(data)) {
+      if (Array.isArray(value) && value.length > 0) {
+        return `${key}: ${value[0]}`;
+      }
+      if (typeof value === 'string') {
+        return `${key}: ${value}`;
+      }
+    }
+  }
+
+  return undefined;
+}
+
 client.interceptors.response.use(
   (response) => response,
   (error) => {
     const data = error?.response?.data;
-    let message: string | undefined = data?.detail || data?.message;
-
-    if (!message && data && typeof data === 'object') {
-      for (const key of Object.keys(data)) {
-        const val = (data as any)[key];
-        if (Array.isArray(val) && val.length) { message = `${key}: ${val[0]}`; break; }
-        if (typeof val === 'string') { message = `${key}: ${val}`; break; }
-      }
-    }
-
-    if (!message && typeof data === 'string') {
-      message = data;
-    }
-
-    if (!message) {
-      message = error?.message || 'Request failed';
-    }
-
+    const message = extractErrorMessage(data) || error?.message || 'Request failed';
     return Promise.reject(new Error(message));
   }
 );

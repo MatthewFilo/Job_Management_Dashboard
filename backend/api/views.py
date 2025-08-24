@@ -11,7 +11,9 @@ from .models import Job, JobStatus
 from .serializers import JobSerializer, JobListSerializer, StatusUpdateSerializer, JobStatusSerializer
 from . import services
 
-# Create your views here.
+import logging
+
+logger = logging.getLogger(__name__)
 
 class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all().only('id', 'name', 'created_at', 'updated_at', 'current_status_type', 'current_status_timestamp').order_by('id')
@@ -27,20 +29,26 @@ class JobViewSet(viewsets.ModelViewSet):
         return qs
 
     def get_serializer_class(self):
-        if self.action == 'list':
-            return JobListSerializer
         return JobSerializer
 
     def _cache_get(self, key: str):
         try:
             return cache.get(key)
         except Exception:
+            logger.error(f"Unexpected cache error for key {key}: {e}")
+            return None
+    def _cache_set(self, key: str, value, timeout: int):
+        try:
+            cache.set(key, value, timeout=timeout)
+        except Exception as e:
+            logger.error(f"Unexpected cache error for key {key}: {e}")
             return None
 
     def _cache_set(self, key: str, value, timeout: int):
         try:
             cache.set(key, value, timeout=timeout)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Unexpected cache error for key {key}: {e}")
             pass
 
     def _epoch(self) -> int:
@@ -50,7 +58,8 @@ class JobViewSet(viewsets.ModelViewSet):
                 cache.set(settings.CACHE_EPOCH_KEY, 1, timeout=None)
                 return 1
             return int(val)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Unexpected cache error while getting epoch: {e}")
             return 1
 
     def list(self, request, *args, **kwargs):
@@ -133,9 +142,9 @@ class JobViewSet(viewsets.ModelViewSet):
         try:
             cache.delete_many([f"job:{updated.id}:v{self._epoch()}", f"job:{updated.id}:history:v{self._epoch()}"])
             cache.incr(settings.CACHE_EPOCH_KEY)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Unexpected cache error while updating job status: {e}")
             pass
-
         return Response(JobSerializer(updated).data)
 
     @action(detail=True, methods=['get'], url_path='history')

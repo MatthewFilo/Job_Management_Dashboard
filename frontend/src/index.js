@@ -32,5 +32,3 @@ root.render(
     </ErrorBoundary>
   </React.StrictMode>
 );
-
-// Removed CRA web vitals reporting
