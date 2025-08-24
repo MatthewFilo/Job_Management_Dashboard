@@ -79,7 +79,7 @@ A full-stack web application for managing jobs with real-time status updates, se
 
 ### Backend
 - **Django** with Django REST Framework
-- **SQLite** database for data persistence
+- **PostgreSQL** database for data persistence
 - **Cursor-based pagination** for optimal performance
 
 ### DevOps & Testing
